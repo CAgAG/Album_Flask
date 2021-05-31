@@ -14,7 +14,10 @@ def register():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    result = database.create_base_user(username=username, password=password)
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+
+    result = database.create_user(username=username, password=password, email=email, phone=phone)
 
     if result:
         return jsonify({

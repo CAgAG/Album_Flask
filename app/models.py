@@ -11,6 +11,9 @@ class User(db.Model):
     avatarPath = db.Column(db.String(80), nullable=True)
     selfIntro = db.Column(db.Text(), nullable=True)
 
+    email = db.Column(db.String(80), nullable=True)
+    phone = db.Column(db.String(80), nullable=True)
+
     def __repr__(self):
         return f'user: {self.username}'
 
