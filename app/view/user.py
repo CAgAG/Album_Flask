@@ -13,8 +13,10 @@ user = Blueprint('user', __name__)
 def register():
     username = request.form.get("username")
     password = request.form.get("password")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
 
-    result = database.create_base_user(username=username, password=password)
+    result = database.create_base_user(username=username, password=password, email=email, phone=phone)
 
     if result:
         return jsonify(resultCode.success_message(message='注册成功'))

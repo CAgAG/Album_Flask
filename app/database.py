@@ -11,10 +11,12 @@ def db_commit():
 
 # -------------------------------user
 
-def create_base_user(username: str, password: str):
+def create_base_user(username: str, password: str, email: str, phone: str):
     user = models.User()
     user.username = username
     user.password = password
+    user.email = email
+    user.phone = phone
     db.session.add(user)
     return db_commit()
 
