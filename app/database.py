@@ -40,6 +40,22 @@ def get_user_info(username: str):
     fuser = users[0]
     return fuser
 
+def change_user_info(username: str, nickname: str, selfIntro: str, email: str, phone: str):
+    user = models.User()
+
+    users = user.query.filter_by(username=username).all()
+    if len(users) == 0:
+        return False
+    fuser = users[0]
+    assert isinstance(fuser, models.User)
+    fuser.nickname = nickname
+    fuser.selfIntro = selfIntro
+    fuser.email = email
+    fuser.phone = phone
+    db.session.update(fuser)
+    db_commit()
+    return fuser
+
 # --------------------------------picture
 
 def create_album(username: str, albumName: str):
