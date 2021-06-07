@@ -44,7 +44,7 @@ def change_user_info(username: str, nickname: str, selfIntro: str, email: str, p
     user = models.User()
 
     user = user.query.filter_by(username=username)
-    if user is None:
+    if len(user.all()) == 0:
         return False
 
     args = {
