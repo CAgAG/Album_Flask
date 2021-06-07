@@ -9,7 +9,7 @@ from app.view import resultCode
 
 picture = Blueprint('picture', __name__)
 
-UPLOAD_PATH = './app/media/'
+UPLOAD_PATH = 'C:/Users/aogeChen/Desktop/Album_flask/app/media/'
 
 
 def to_boolean(s: str):

@@ -5,6 +5,7 @@ def db_commit():
     try:
         db.session.commit()
     except Exception as e:
+        print("提交发送错误： ", e)
         return False
     return True
 
