@@ -45,3 +45,20 @@ def login():
         "code": resultCode.fail,
         'massage': "登录失败"
     })
+
+@user.route('/show_user_info', methods=['POST'])
+def login():
+    username = request.form.get("username")
+
+    user = database.get_user_info(username=username)
+    if not user:
+        return jsonify(resultCode.fail_message(message='没有该用户'))
+
+    data = {
+        'nickname': user.nickname,
+        'avatarPath': user.avatarPath,
+        'selfIntro': user.selfIntro,
+        'email': user.email,
+        'phone': user.phone
+    }
+    return jsonify(resultCode.success_message(message='查询成功', data=data))
