@@ -43,18 +43,19 @@ def get_user_info(username: str):
 def change_user_info(username: str, nickname: str, selfIntro: str, email: str, phone: str):
     user = models.User()
 
-    users = user.query.filter_by(username=username).all()
-    if len(users) == 0:
+    user = user.query.filter_by(username=username)
+    if user is None:
         return False
-    fuser = users[0]
-    assert isinstance(fuser, models.User)
-    fuser.nickname = nickname
-    fuser.selfIntro = selfIntro
-    fuser.email = email
-    fuser.phone = phone
-    db.session.update(fuser)
+
+    args = {
+        'nickname': nickname,
+        'selfIntro': selfIntro,
+        'email': email,
+        'phone': phone
+    }
+    user.update(args)
     db_commit()
-    return fuser
+    return user
 
 # --------------------------------picture
 
