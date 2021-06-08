@@ -132,3 +132,12 @@ def del_picture():
 
     os.remove(os.path.join(UPLOAD_PATH.rstrip('media/'), pic_path))
     return jsonify(resultCode.success_message(message='删除成功'))
+
+
+@picture.route('/index', methods=['POST'])
+def index():
+    page = request.form.get('page')
+    num = request.form.get('num')
+
+    p_info = database.show_visible_picture(page=int(page), num=int(num))
+    return jsonify(resultCode.success_message(message='查询成功', data=p_info))

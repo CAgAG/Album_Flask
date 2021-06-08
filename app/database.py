@@ -144,3 +144,28 @@ def del_picture(pic_id: str):
     db.session.delete(pictures[0])
     db_commit()
     return True
+
+def show_visible_picture(page: int, num: int):
+    picture = models.Picture()
+    album = models.Album()
+    pictures = picture.query.filter_by(visible=True).paginate(page=page, per_page=num).items
+
+    rets = []
+    for p in pictures:
+        pic_name = p.pictureName
+        # pic_path = p.picturePath
+        pic_starSum = p.starSum
+        pic_id = p.pictureId
+
+        pic_albumId = p.albumId
+        unique_album = album.query.filter_by(albumId=pic_albumId).first()
+        username = unique_album.username
+        data = {
+            'pic_name': pic_name,
+            'pic_id': pic_id,
+            'pic_starSum': pic_starSum,
+            'username': username
+        }
+        rets.append(data)
+
+    return rets
