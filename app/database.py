@@ -15,6 +15,7 @@ def db_commit():
 def create_base_user(username: str, password: str, email: str, phone: str):
     user = models.User()
     user.username = username
+    user.nickname = username
     user.password = password
     user.email = email
     user.phone = phone
@@ -55,6 +56,20 @@ def change_user_info(username: str, nickname: str, selfIntro: str, email: str, p
         'selfIntro': selfIntro,
         'email': email,
         'phone': phone
+    }
+    user.update(args)
+    db_commit()
+    return user
+
+def change_user_avatar(username: str, avatarPath: str):
+    user = models.User()
+
+    user = user.query.filter_by(username=username)
+    if len(user.all()) == 0:
+        return False
+
+    args = {
+        'avatarPath': avatarPath,
     }
     user.update(args)
     db_commit()
@@ -148,7 +163,7 @@ def del_picture(pic_id: str):
 def show_visible_picture(page: int, num: int):
     picture = models.Picture()
     album = models.Album()
-    pictures = picture.query.filter_by(visible=True).paginate(page=page, per_page=num).items
+    pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page, per_page=num).items
 
     rets = []
     for p in pictures:
@@ -161,11 +176,22 @@ def show_visible_picture(page: int, num: int):
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
         data = {
+            'pic_url': 'https://www.2020agc.site/picture/show_picture/'+str(pic_id),
+            'avatar_url': 'https://www.2020agc.site/user/show_avatar/'+str(username),
             'pic_name': pic_name,
             'pic_id': pic_id,
             'pic_starSum': pic_starSum,
-            'username': username
+            'username': username,
+            'albumName': unique_album.albumName
         }
         rets.append(data)
 
     return rets
+
+def get_avatar_path(username: str):
+    user = models.User()
+    users = user.query.filter_by(username=username).all()
+
+    if len(users) == 0:
+        return None
+    return users[0].avatarPath.lstrip('./app')

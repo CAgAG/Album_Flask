@@ -1,0 +1,1 @@
+UPLOAD_PATH = 'C:/Users/aogeChen/Desktop/Album_flask/app/media/'

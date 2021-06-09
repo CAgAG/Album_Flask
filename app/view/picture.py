@@ -5,11 +5,9 @@ from flask import Blueprint, render_template, \
 from werkzeug.utils import secure_filename
 
 from app import database
-from app.view import resultCode
+from app.view import resultCode, UPLOAD_PATH
 
 picture = Blueprint('picture', __name__)
-
-UPLOAD_PATH = 'C:/Users/aogeChen/Desktop/Album_flask/app/media/'
 
 
 def to_boolean(s: str):
@@ -91,10 +89,8 @@ def show_album_pictures():
         return jsonify(resultCode.fail_message(message='查询失败'))
 
 
-@picture.route('/show_picture', methods=['POST'])
-def show_picture():
-    pic_id = request.form.get('pic_id')
-
+@picture.route('/show_picture/<path:pic_id>', methods=['GET'])
+def show_picture(pic_id: str):
     pic_path = database.get_picture_path(pic_id=pic_id)
     if pic_path is None:
         return jsonify(resultCode.fail_message(message='没有图片资源'))

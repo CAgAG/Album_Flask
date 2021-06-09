@@ -1,10 +1,10 @@
-import datetime
+import datetime, os, uuid
 
 from flask import Blueprint, render_template, \
-    request, redirect, url_for, session, jsonify
+    request, redirect, url_for, session, jsonify, send_file
 
 from app import database
-from app.view import resultCode
+from app.view import resultCode, UPLOAD_PATH
 
 user = Blueprint('user', __name__)
 
@@ -66,3 +66,32 @@ def change_user_info():
         return jsonify(resultCode.fail_message(message='没有该用户'))
 
     return jsonify(resultCode.success_message(message='修改成功'))
+
+
+@user.route('/upload_avatar', methods=['POST'])
+def upload_avatar():
+    username = request.form.get("username")
+    file = request.files['file']
+    filetype = file.content_type.lstrip('image/')
+
+    path = os.path.join(UPLOAD_PATH, username)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    filepath = os.path.join(path, str(uuid.uuid4()) + '.' + filetype)
+
+    try:
+        file.save(filepath)
+        database.change_user_avatar(username=username, avatarPath=filepath)
+
+        return jsonify(resultCode.success_message(message='上传成功'))
+    except Exception:
+        return jsonify(resultCode.fail_message(message='上传失败'))
+
+
+@user.route('/show_avatar/<path:username>', methods=['GET'])
+def show_picture(username: str):
+    pic_path = database.get_avatar_path(username=username)
+    if pic_path is None:
+        return jsonify(resultCode.fail_message(message='没有图片资源'))
+    return send_file(pic_path)
