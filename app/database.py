@@ -109,6 +109,13 @@ def change_star(username: str, picId: str):
         return False
 
 
+def is_star(username: str, picId: str):
+    user_star = models.UserStar()
+
+    user_star_query = user_star.query.filter_by(username=username, picId=picId).first()
+    return user_star_query.isStar
+
+
 # --------------------------------picture
 
 def create_album(username: str, albumName: str):
@@ -200,10 +207,9 @@ def del_picture(pic_id: str):
     return True
 
 
-def show_visible_picture(user_name: str, page: int, num: int):
+def show_visible_picture(page: int, num: int):
     picture = models.Picture()
     album = models.Album()
-    user_star = models.UserStar()
     pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page,
                                                                                                      per_page=num).items
 
@@ -218,12 +224,6 @@ def show_visible_picture(user_name: str, page: int, num: int):
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
 
-        star = user_star.query.filter_by(username=user_name, picId=pic_id).all()
-        if len(star) == 0:
-            is_star = False
-        else:
-            is_star = star[0].isStar
-
         data = {
             'pic_url': '{}/picture/show_picture/'.format(BASEURL) + str(pic_id),
             'avatar_url': '{}/user/show_avatar/'.format(BASEURL) + str(username),
@@ -232,7 +232,6 @@ def show_visible_picture(user_name: str, page: int, num: int):
             'pic_starSum': pic_starSum,
             'username': username,
             'albumName': unique_album.albumName,
-            'is_star': is_star,
             'downloadSum': p.downloadSum
         }
         rets.append(data)

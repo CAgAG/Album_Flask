@@ -135,7 +135,6 @@ def del_picture():
 def index():
     page = request.form.get('page')
     num = request.form.get('num')
-    username = request.form.get('username')
 
-    p_info = database.show_visible_picture(user_name=username, page=int(page), num=int(num))
+    p_info = database.show_visible_picture(page=int(page), num=int(num))
     return jsonify(resultCode.success_message(message='查询成功', data=p_info))

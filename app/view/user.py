@@ -105,3 +105,19 @@ def change_star_picture():
     if database.change_star(username=username, picId=picId):
         return jsonify(resultCode.success_message(message='改变star成功'))
     return jsonify(resultCode.fail_message(message='改变star失败'))
+
+
+@user.route('/picture_is_star', methods=['POST'])
+def picture_is_star():
+    username = request.form.get("username")
+    picId = request.form.get("picId")
+
+    try:
+        result = database.is_star(username=username, picId=picId)
+        ctx = {
+            'is_star': result
+        }
+        return jsonify(resultCode.success_message(message='查询成功', data=ctx))
+    except Exception:
+        return jsonify(resultCode.success_message(message='查询失败'))
+
