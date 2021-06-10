@@ -95,3 +95,13 @@ def show_picture(username: str):
     if pic_path is None:
         return jsonify(resultCode.fail_message(message='没有图片资源'))
     return send_file(pic_path)
+
+
+@user.route('/change_star_picture', methods=['POST'])
+def change_star_picture():
+    username = request.form.get("username")
+    picId = request.form.get("picId")
+
+    if database.change_star(username=username, picId=picId):
+        return jsonify(resultCode.success_message(message='改变star成功'))
+    return jsonify(resultCode.fail_message(message='改变star失败'))

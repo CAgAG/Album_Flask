@@ -79,6 +79,36 @@ def change_user_avatar(username: str, avatarPath: str):
     return user
 
 
+def change_star(username: str, picId: str):
+    user_star = models.UserStar()
+    picture = models.Picture()
+
+    user_star_query = user_star.query.filter_by(username=username, picId=picId)
+    try:
+        if len(user_star_query.all()) == 0:
+            assert isinstance(user_star, models.UserStar)
+            user_star.username = username
+            user_star.picId = picId
+            user_star.isStar = False
+            db.session.add(user_star)
+            db_commit()
+            user_star_query = user_star
+        else:
+            user_star_query = user_star_query.first()
+
+        user_star_query.isStar = not user_star_query.isStar
+        pr = picture.query.filter_by(pictureId=picId).first()
+        if user_star_query.isStar:
+            pr.starSum += 1
+        else:
+            pr.starSum -= 1
+        db_commit()
+        return True
+    except Exception:
+        print('update star 失败')
+        return False
+
+
 # --------------------------------picture
 
 def create_album(username: str, albumName: str):
@@ -156,18 +186,24 @@ def get_picture_info(pic_id: str):
 
 def del_picture(pic_id: str):
     picture = models.Picture()
+    comment = models.Comment()
+    comments = comment.query.filter_by(pictureId=pic_id).all()
     pictures = picture.query.filter_by(pictureId=pic_id).all()
 
     if len(pictures) == 0:
         return False
+    for c in comments:
+        db.session.delete(c)
+    db_commit()
     db.session.delete(pictures[0])
     db_commit()
     return True
 
 
-def show_visible_picture(page: int, num: int):
+def show_visible_picture(user_name: str, page: int, num: int):
     picture = models.Picture()
     album = models.Album()
+    user_star = models.UserStar()
     pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page,
                                                                                                      per_page=num).items
 
@@ -181,6 +217,13 @@ def show_visible_picture(page: int, num: int):
         pic_albumId = p.albumId
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
+
+        star = user_star.query.filter_by(username=user_name, picId=pic_id).all()
+        if len(star) == 0:
+            is_star = False
+        else:
+            is_star = star[0].isStar
+
         data = {
             'pic_url': '{}/picture/show_picture/'.format(BASEURL) + str(pic_id),
             'avatar_url': '{}/user/show_avatar/'.format(BASEURL) + str(username),
@@ -188,7 +231,9 @@ def show_visible_picture(page: int, num: int):
             'pic_id': pic_id,
             'pic_starSum': pic_starSum,
             'username': username,
-            'albumName': unique_album.albumName
+            'albumName': unique_album.albumName,
+            'is_star': is_star,
+            'downloadSum': p.downloadSum
         }
         rets.append(data)
 
