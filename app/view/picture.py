@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, \
 from werkzeug.utils import secure_filename
 
 from app import database
-from app.view import resultCode, UPLOAD_PATH
+from app.view import resultCode, UPLOAD_PATH, BASEURL
 
 picture = Blueprint('picture', __name__)
 
@@ -112,7 +112,8 @@ def show_picture_info():
         'pictureIntro': picture.pictureIntro,
         'downloadSum': picture.downloadSum,
         'thumbnailPath': picture.thumbnailPath,
-        'crated': picture.crated
+        'crated': picture.crated,
+        'comment_url': '{}/comment/show_comment/'.format(BASEURL) + pic_id
     }
     return jsonify(resultCode.success_message(message='查询成功', data=data))
 

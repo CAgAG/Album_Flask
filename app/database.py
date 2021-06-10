@@ -1,4 +1,5 @@
 from app import db, models
+from app.view import BASEURL
 
 
 def db_commit():
@@ -44,6 +45,7 @@ def get_user_info(username: str):
     fuser = users[0]
     return fuser
 
+
 def change_user_info(username: str, nickname: str, selfIntro: str, email: str, phone: str):
     user = models.User()
 
@@ -61,6 +63,7 @@ def change_user_info(username: str, nickname: str, selfIntro: str, email: str, p
     db_commit()
     return user
 
+
 def change_user_avatar(username: str, avatarPath: str):
     user = models.User()
 
@@ -74,6 +77,7 @@ def change_user_avatar(username: str, avatarPath: str):
     user.update(args)
     db_commit()
     return user
+
 
 # --------------------------------picture
 
@@ -160,10 +164,12 @@ def del_picture(pic_id: str):
     db_commit()
     return True
 
+
 def show_visible_picture(page: int, num: int):
     picture = models.Picture()
     album = models.Album()
-    pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page, per_page=num).items
+    pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page,
+                                                                                                     per_page=num).items
 
     rets = []
     for p in pictures:
@@ -176,8 +182,8 @@ def show_visible_picture(page: int, num: int):
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
         data = {
-            'pic_url': 'https://www.2020agc.site/picture/show_picture/'+str(pic_id),
-            'avatar_url': 'https://www.2020agc.site/user/show_avatar/'+str(username),
+            'pic_url': '{}/picture/show_picture/'.format(BASEURL) + str(pic_id),
+            'avatar_url': '{}/user/show_avatar/'.format(BASEURL) + str(username),
             'pic_name': pic_name,
             'pic_id': pic_id,
             'pic_starSum': pic_starSum,
@@ -188,6 +194,7 @@ def show_visible_picture(page: int, num: int):
 
     return rets
 
+
 def get_avatar_path(username: str):
     user = models.User()
     users = user.query.filter_by(username=username).all()
@@ -195,3 +202,33 @@ def get_avatar_path(username: str):
     if len(users) == 0:
         return None
     return users[0].avatarPath.lstrip('./app')
+
+
+# --------------------------------------------- comment
+def add_comment(username: str, pic_id: int, content: str):
+    comment = models.Comment()
+
+    comment.username = username
+    comment.pictureId = pic_id
+    comment.comment = content
+
+    db.session.add(comment)
+    db_commit()
+    return comment.commentId
+
+
+def show_comment(pic_id: int):
+    comment = models.Comment()
+
+    comments = comment.query.filter_by(pictureId=pic_id).all()
+
+    rets = []
+    for c in comments:
+        ret = {}
+        assert isinstance(c, models.Comment)
+        ret['username'] = c.username
+        ret['content'] = c.comment
+        ret['date'] = c.crated
+
+        rets.append(ret)
+    return rets
