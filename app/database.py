@@ -115,6 +115,15 @@ def is_star(username: str, picId: str):
     user_star_query = user_star.query.filter_by(username=username, picId=picId).first()
     return user_star_query.isStar
 
+def get_nickName(username: str):
+    user = models.User()
+
+    user = user.query.filter_by(username=username)
+    if len(user.all()) == 0:
+        return ''
+
+    return user.first().nickname
+
 
 # --------------------------------picture
 
@@ -223,6 +232,7 @@ def show_visible_picture(page: int, num: int):
         pic_albumId = p.albumId
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
+        nickName = get_nickName(username=username)
 
         data = {
             'pic_url': '{}/picture/show_picture/'.format(BASEURL) + str(pic_id),
@@ -230,7 +240,7 @@ def show_visible_picture(page: int, num: int):
             'pic_name': pic_name,
             'pic_id': pic_id,
             'pic_starSum': pic_starSum,
-            'username': username,
+            'username': nickName,
             'albumName': unique_album.albumName,
             'downloadSum': p.downloadSum
         }
