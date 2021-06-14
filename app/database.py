@@ -148,7 +148,7 @@ def get_albumId(username: str, albumName: str):
 def create_picture(path: str, filename: str, intro: str, visible=False, albumId=0):
     picture = models.Picture()
 
-    picture.pictureName = filename
+    picture.pictureName = filename.replace('..', '.')
     picture.picturePath = path
     picture.pictureIntro = intro
     picture.visible = visible
@@ -234,11 +234,13 @@ def show_visible_picture(page: int, num: int):
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
         nickName = get_nickName(username=username)
+        if nickName is None:
+            nickName = username
 
         data = {
             'pic_url': '{}/picture/show_picture/'.format(BASEURL) + str(pic_id),
             'avatar_url': '{}/user/show_avatar/'.format(BASEURL) + str(username),
-            'pic_name': pic_name,
+            'pic_name': pic_name.split('.')[0],
             'pic_id': pic_id,
             'pic_starSum': pic_starSum,
             'username': nickName,

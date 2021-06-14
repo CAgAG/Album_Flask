@@ -63,6 +63,13 @@ def upload_picture():
 
         return jsonify(resultCode.success_message(message='上传成功', data=data))
     except Exception:
+        print('=====================')
+        print('filetype: ', filetype)
+        print('filepath: ', filepath)
+        print('intro: ', intro)
+        if file is None:
+            print("未接收到图片")
+        print('=====================')
         return jsonify(resultCode.fail_message(message='上传失败'))
 
 
