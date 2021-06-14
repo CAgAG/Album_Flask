@@ -36,7 +36,7 @@ def create_album():
 @picture.route('/upload', methods=['POST'])
 def upload_picture():
     file = request.files['file']
-    filename = file.filename
+    filename = request.form.get('filename')
     filetype = file.content_type.lstrip('image/')
     username = request.form.get('username')
 
@@ -54,7 +54,7 @@ def upload_picture():
 
     try:
         file.save(filepath)
-        pic_id = database.create_picture(path=filepath, filename=filename, intro=intro, visible=visible,
+        pic_id = database.create_picture(path=filepath, filename=filename + '.' + filetype, intro=intro, visible=visible,
                                          albumId=albumId)
 
         data = {

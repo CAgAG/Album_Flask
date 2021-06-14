@@ -115,6 +115,7 @@ def is_star(username: str, picId: str):
     user_star_query = user_star.query.filter_by(username=username, picId=picId).first()
     return user_star_query.isStar
 
+
 def get_nickName(username: str):
     user = models.User()
 
@@ -280,7 +281,7 @@ def show_comment(pic_id: int):
     for c in comments:
         ret = {}
         assert isinstance(c, models.Comment)
-        ret['username'] = c.username
+        ret['nickName'] = get_nickName(username=c.username)
         ret['content'] = c.comment
         ret['date'] = c.crated
 
