@@ -27,3 +27,12 @@ def show_comment(pic_id: str):
     if len(result) == 0:
         return jsonify(resultCode.fail_message(message='无评论', data=result))
     return jsonify(resultCode.success_message(message='查询成功', data=result))
+
+
+@comment.route('/del', methods=['POST'])
+def delete():
+    comment_id = request.form.get('comment_id')
+    result = database.delete_comment(comment_id=int(comment_id))
+    if result is not None:
+        return jsonify(resultCode.fail_message(message='删除成功', data=result))
+    return jsonify(resultCode.success_message(message='删除失败'))

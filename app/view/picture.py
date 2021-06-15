@@ -134,7 +134,7 @@ def del_picture():
     if not is_del:
         return jsonify(resultCode.fail_message(message='删除失败'))
 
-    os.remove(os.path.join(UPLOAD_PATH.rstrip('media/'), pic_path))
+    os.remove(os.path.join(pic_path))
     return jsonify(resultCode.success_message(message='删除成功'))
 
 
@@ -145,3 +145,16 @@ def index():
 
     p_info = database.show_visible_picture(page=int(page), num=int(num))
     return jsonify(resultCode.success_message(message='查询成功', data=p_info))
+
+@picture.route('/del_album', methods=['POST'])
+def del_album():
+    username = request.form.get('username')
+    albumName = request.form.get('albumName')
+
+    is_del = database.delete_album(username=username, albumName=albumName)
+    if is_del is None:
+        return jsonify(resultCode.fail_message(message='删除失败'))
+
+    for path in is_del:
+        os.remove(os.path.join(path))
+    return jsonify(resultCode.success_message(message='删除成功'))

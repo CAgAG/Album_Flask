@@ -142,7 +142,6 @@ def create_album(username: str, albumName: str):
         return albums[0].albumId
 
 
-
 def get_albumId(username: str, albumName: str):
     album = models.Album()
     albums = album.query.filter_by(username=username, albumName=albumName).all()
@@ -195,7 +194,7 @@ def get_picture_path(pic_id: str):
 
     if len(pictures) == 0:
         return None
-    return pictures[0].picturePath.lstrip('./app')
+    return pictures[0].picturePath
 
 
 def get_picture_info(pic_id: str):
@@ -267,6 +266,26 @@ def get_avatar_path(username: str):
     return users[0].avatarPath.lstrip('./app')
 
 
+def delete_album(username: str, albumName: str):
+    albumId = get_albumId(username=username, albumName=albumName)
+
+    album = models.Album()
+    picture = models.Picture()
+
+    a = album.query.filter_by(albumId=albumId).first()
+    ps = picture.query.filter_by(albumId=albumId).all()
+    if a is None:
+        return None
+    ret = []
+    for p in ps:
+        db.session.delete(p)
+        ret.append(p.picturePath)
+    db_commit()
+    db.session.delete(a)
+    db_commit()
+    return ret
+
+
 # --------------------------------------------- comment
 def add_comment(username: str, pic_id: int, content: str):
     comment = models.Comment()
@@ -289,9 +308,21 @@ def show_comment(pic_id: int):
     for c in comments:
         ret = {}
         assert isinstance(c, models.Comment)
+        ret['comment_id'] = c.commentId
         ret['nickName'] = get_nickName(username=c.username)
         ret['content'] = c.comment
         ret['date'] = c.crated
 
         rets.append(ret)
     return rets
+
+
+def delete_comment(comment_id: int):
+    comment = models.Comment()
+    c = comment.query.filter_by(commentId=comment_id).first()
+    if c is None:
+        return None
+    cId = c.commentId
+    db.session.delete(c)
+    db_commit()
+    return cId
