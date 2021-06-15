@@ -132,9 +132,15 @@ def create_album(username: str, albumName: str):
     album = models.Album()
     album.albumName = albumName
     album.username = username
-    db.session.add(album)
-    db_commit()
-    return album.albumId
+
+    albums = album.query.filter_by(albumName=albumName, username=username).all()
+    if len(albums) == 0:
+        db.session.add(album)
+        db_commit()
+        return album.albumId
+    else:
+        return albums[0].albumId
+
 
 
 def get_albumId(username: str, albumName: str):
