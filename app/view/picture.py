@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, \
 from werkzeug.utils import secure_filename
 
 from app import database
-from app.view import resultCode, UPLOAD_PATH, BASEURL
+from app.view import resultCode, UPLOAD_PATH, BASEURL, spider
 
 picture = Blueprint('picture', __name__)
 
@@ -54,7 +54,8 @@ def upload_picture():
 
     try:
         file.save(filepath)
-        pic_id = database.create_picture(path=filepath, filename=filename + '.' + filetype, intro=intro, visible=visible,
+        pic_id = database.create_picture(path=filepath, filename=filename + '.' + filetype, intro=intro,
+                                         visible=visible,
                                          albumId=albumId)
 
         data = {
@@ -119,8 +120,9 @@ def show_picture_info():
         'pictureIntro': picture.pictureIntro,
         'downloadSum': picture.downloadSum,
         'thumbnailPath': picture.thumbnailPath,
-        'crated': picture.crated,
-        'comment_url': '{}/comment/show_comment/'.format(BASEURL) + pic_id
+        'created': picture.crated,
+        'comment_url': '{}/comment/show_comment/'.format(BASEURL) + pic_id,
+        'picture_url': '{}/picture/show_picture/'.format(BASEURL) + pic_id
     }
     return jsonify(resultCode.success_message(message='查询成功', data=data))
 
@@ -146,6 +148,7 @@ def index():
     p_info = database.show_visible_picture(page=int(page), num=int(num))
     return jsonify(resultCode.success_message(message='查询成功', data=p_info))
 
+
 @picture.route('/del_album', methods=['POST'])
 def del_album():
     username = request.form.get('username')
@@ -158,3 +161,13 @@ def del_album():
     for path in is_del:
         os.remove(os.path.join(path))
     return jsonify(resultCode.success_message(message='删除成功'))
+
+
+@picture.route('/baidu_index', methods=['POST'])
+def baidu_index():
+    page = request.form.get('page')
+    num = request.form.get('num')
+    keyword = request.form.get('keyword')
+
+    p_info = spider.spider_baidu(page=int(page), num=int(num), keyword=keyword)
+    return jsonify(resultCode.success_message(message='查询成功', data=p_info))

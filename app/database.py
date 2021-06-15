@@ -194,7 +194,7 @@ def get_picture_path(pic_id: str):
 
     if len(pictures) == 0:
         return None
-    return pictures[0].picturePath
+    return pictures[0].picturePath.lstrip('./app/')
 
 
 def get_picture_info(pic_id: str):
