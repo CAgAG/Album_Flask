@@ -136,7 +136,7 @@ def del_picture():
     if not is_del:
         return jsonify(resultCode.fail_message(message='删除失败'))
 
-    os.remove(os.path.join(pic_path))
+    os.remove(os.path.join('./app/', pic_path))
     return jsonify(resultCode.success_message(message='删除成功'))
 
 
@@ -159,7 +159,7 @@ def del_album():
         return jsonify(resultCode.fail_message(message='删除失败'))
 
     for path in is_del:
-        os.remove(os.path.join(path))
+        os.remove(os.path.join('./app/', path))
     return jsonify(resultCode.success_message(message='删除成功'))
 
 
