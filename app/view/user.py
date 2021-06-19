@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, \
     request, redirect, url_for, session, jsonify, send_file
 
 from app import database
-from app.view import resultCode, UPLOAD_PATH
+from app.view import resultCode, UPLOAD_PATH, BASEURL
 
 user = Blueprint('user', __name__)
 
@@ -44,7 +44,7 @@ def show_user_info():
 
     data = {
         'nickname': user.nickname,
-        'avatarPath': user.avatarPath,
+        'avatarPath': BASEURL + '/show_avatar/' + username,
         'selfIntro': user.selfIntro,
         'email': user.email,
         'phone': user.phone

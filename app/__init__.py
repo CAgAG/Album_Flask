@@ -16,3 +16,15 @@ db.create_all()
 @app.route("/")
 def hello():
     return "hello world!"
+
+@app.route("/index")
+def t_index():
+    return render_template('index.html')
+
+@app.route("/about")
+def t_about():
+    return render_template('about.html')
+
+@app.route("/download_app")
+def download_app():
+    return send_file('./media/base.apk', as_attachment=True, attachment_filename='悦享.apk')
