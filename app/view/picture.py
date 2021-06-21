@@ -171,3 +171,15 @@ def baidu_index():
 
     p_info = spider.spider_baidu(page=int(page), num=int(num), keyword=keyword)
     return jsonify(resultCode.success_message(message='查询成功', data=p_info))
+
+
+@picture.route('/douban_rank', methods=['POST'])
+def douban_rank():
+    p_info = spider.spider_doban()
+    return jsonify(resultCode.success_message(message='查询成功', data=p_info))
+
+
+@picture.route('/wallpaper_rank', methods=['POST'])
+def wallpaper_rank():
+    p_info = spider.spider_netbian()
+    return jsonify(resultCode.success_message(message='查询成功', data=p_info))

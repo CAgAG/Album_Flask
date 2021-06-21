@@ -119,5 +119,8 @@ def picture_is_star():
         }
         return jsonify(resultCode.success_message(message='查询成功', data=ctx))
     except Exception:
-        return jsonify(resultCode.success_message(message='查询失败'))
+        ctx = {
+            'is_star': False
+        }
+        return jsonify(resultCode.success_message(message='查询成功', data=ctx))
 
