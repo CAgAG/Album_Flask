@@ -113,6 +113,8 @@ def is_star(username: str, picId: str):
     user_star = models.UserStar()
 
     user_star_query = user_star.query.filter_by(username=username, picId=picId).first()
+    if user_star_query is None:
+        return False
     return user_star_query.isStar
 
 
@@ -222,7 +224,7 @@ def del_picture(pic_id: str):
     return True
 
 
-def show_visible_picture(page: int, num: int):
+def show_visible_picture(cur_username: str, page: int, num: int):
     picture = models.Picture()
     album = models.Album()
     pictures = picture.query.filter_by(visible=True).order_by(models.Picture.crated.desc()).paginate(page=page,
@@ -239,6 +241,7 @@ def show_visible_picture(page: int, num: int):
         unique_album = album.query.filter_by(albumId=pic_albumId).first()
         username = unique_album.username
         nickName = get_nickName(username=username)
+        isStar = is_star(username=cur_username, picId=pic_id)
         if nickName is None:
             nickName = username
 
@@ -250,7 +253,8 @@ def show_visible_picture(page: int, num: int):
             'pic_starSum': pic_starSum,
             'username': nickName,
             'albumName': unique_album.albumName,
-            'downloadSum': p.downloadSum
+            'downloadSum': p.downloadSum,
+            'is_star': isStar
         }
         rets.append(data)
 
