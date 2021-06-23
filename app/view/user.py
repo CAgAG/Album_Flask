@@ -44,7 +44,7 @@ def show_user_info():
 
     data = {
         'nickname': user.nickname,
-        'avatarPath': BASEURL + '/show_avatar/' + username,
+        'avatar_url': BASEURL + '/user/show_avatar/' + username,
         'selfIntro': user.selfIntro,
         'email': user.email,
         'phone': user.phone
