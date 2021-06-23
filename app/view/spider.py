@@ -82,6 +82,6 @@ def spider_netbian():
 
 
 if __name__ == '__main__':
-    url = spider_netbian()
-    print(url)
-    print(len(url))
+    url = spider_doban()
+    for u in url:
+        print(u)
