@@ -312,6 +312,7 @@ def show_comment(pic_id: int):
     for c in comments:
         ret = {}
         assert isinstance(c, models.Comment)
+        ret['avatar_url'] = f'{BASEURL}/user/show_avatar/{c.username}'
         ret['comment_id'] = c.commentId
         ret['nickName'] = get_nickName(username=c.username)
         ret['content'] = c.comment
@@ -330,3 +331,10 @@ def delete_comment(comment_id: int):
     db.session.delete(c)
     db_commit()
     return cId
+
+def get_username_by_picId(pic_id: str):
+    album = models.Album()
+    picture = models.Picture()
+    pic_albumId = picture.query.filter_by(pictureId=int(pic_id)).first().albumId
+    unique_album = album.query.filter_by(albumId=pic_albumId).first()
+    return unique_album.username

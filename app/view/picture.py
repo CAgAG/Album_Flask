@@ -113,6 +113,7 @@ def show_picture_info():
     if picture is None:
         return jsonify(resultCode.fail_message(message='没有图片信息'))
 
+    username = database.get_username_by_picId(pic_id=pic_id)
     data = {
         'pictureName': picture.pictureName,
         'starSum': picture.starSum,
@@ -122,7 +123,9 @@ def show_picture_info():
         'thumbnailPath': picture.thumbnailPath,
         'created': picture.crated,
         'comment_url': '{}/comment/show_comment/'.format(BASEURL) + pic_id,
-        'picture_url': '{}/picture/show_picture/'.format(BASEURL) + pic_id
+        'picture_url': '{}/picture/show_picture/'.format(BASEURL) + pic_id,
+        'avatar_url': f'{BASEURL}/user/show_avatar/{username}',
+        'nickName': database.get_nickName(username=username)
     }
     return jsonify(resultCode.success_message(message='查询成功', data=data))
 
@@ -146,7 +149,7 @@ def index():
     page = request.form.get('page')
     num = request.form.get('num')
 
-    p_info = database.show_visible_picture(cur_username = username, page=int(page), num=int(num))
+    p_info = database.show_visible_picture(cur_username=username, page=int(page), num=int(num))
     return jsonify(resultCode.success_message(message='查询成功', data=p_info))
 
 
