@@ -15,7 +15,7 @@ db.create_all()
 
 @app.route("/")
 def hello():
-    return "hello world!"
+    return '<p>hello world!</p><p><a href="/index">首页</a></p>'
 
 @app.route("/index")
 def t_index():
