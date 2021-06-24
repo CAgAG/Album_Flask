@@ -128,6 +128,23 @@ def get_nickName(username: str):
     return user.first().nickname
 
 
+def change_user_password(username: str, password: str, phone: str):
+    user = models.User()
+
+    user = user.query.filter_by(username=username)
+    if len(user.all()) == 0:
+        return None
+    if user.first().phone != phone:
+        return False
+
+    args = {
+        'password': password,
+    }
+    user.update(args)
+    db_commit()
+    return user
+
+
 # --------------------------------picture
 
 def create_album(username: str, albumName: str):
@@ -331,6 +348,7 @@ def delete_comment(comment_id: int):
     db.session.delete(c)
     db_commit()
     return cId
+
 
 def get_username_by_picId(pic_id: str):
     album = models.Album()

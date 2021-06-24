@@ -124,3 +124,17 @@ def picture_is_star():
         }
         return jsonify(resultCode.success_message(message='查询成功', data=ctx))
 
+
+@user.route('/retrieve_password', methods=['POST'])
+def change_user_password():
+    username = request.form.get("username")
+    password = request.form.get('password')
+    phone = request.form.get('phone')
+
+    user = database.change_user_password(username=username, password=password, phone=phone)
+    if user is None:
+        return jsonify(resultCode.fail_message(message='没有该用户'))
+    if user is False:
+        return jsonify(resultCode.fail_message(message='联系号码错误'))
+
+    return jsonify(resultCode.success_message(message='修改成功'))
