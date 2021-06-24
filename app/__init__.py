@@ -28,3 +28,8 @@ def t_about():
 @app.route("/download_app")
 def download_app():
     return send_file('./media/base.apk', as_attachment=True, attachment_filename='悦享.apk')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('./static/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
