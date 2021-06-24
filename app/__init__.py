@@ -1,5 +1,5 @@
 import pymysql
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 pymysql.install_as_MySQLdb()
@@ -27,7 +27,7 @@ def t_about():
 
 @app.route("/download_app")
 def download_app():
-    return send_file('./media/base.apk', as_attachment=True, attachment_filename='悦享.apk')
+    return redirect('https://cloud.189.cn/web/share?code=nAry6bJfeqiq', code=301)
 
 @app.route('/favicon.ico')
 def favicon():
