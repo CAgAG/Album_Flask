@@ -10,6 +10,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 from . import models, blueprint_register
+from app.view import BASEURL
 
 db.create_all()
 
@@ -19,11 +20,17 @@ def hello():
 
 @app.route("/index")
 def t_index():
-    return render_template('index.html')
+    ctx = {
+        'url': BASEURL
+    }
+    return render_template('index.html', **ctx)
 
 @app.route("/about")
 def t_about():
-    return render_template('about.html')
+    ctx = {
+        'url': BASEURL
+    }
+    return render_template('about.html', **ctx)
 
 @app.route("/download_app")
 def download_app():
