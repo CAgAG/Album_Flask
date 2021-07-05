@@ -4,7 +4,7 @@
 用户可将图片分享至平台以供其他用户浏览，用户可对喜欢的图片进行点赞保存分享和搜索等操作。
 
 ### 关联Android项目
-[Android_Course_Design](https://github.com/diadestiny/Android_Course_Design)
+[Android_Course_Design](https://github.com/CAgAG/Android_Course_Design)
 
 ### 运行程序
 #### 修改数据库连接
